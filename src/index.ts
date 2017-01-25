@@ -25,6 +25,8 @@ export = function (params: Input = {}) {
     function handleError(err:TestError) {
         var { errorFilter, verbose } = params
 
+        if (err.casename) console.error(`FAIL ON -- ${err.casename}`)
+
         if (err.changes) {
             if (err.changes.length && errorFilter) {
                 err.changes = err.changes.filter( item => {
@@ -119,8 +121,6 @@ export = function (params: Input = {}) {
                     return current.fn()
                         .then(() => console.log('OK'))
                         .catch(err => {
-                            console.error('Fail on ${current.description}')
-                            console.error(err)
                             err.casename = current.description
                             err.bail = !params.doNotBreak
                             throw err
