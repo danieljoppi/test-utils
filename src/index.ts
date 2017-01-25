@@ -1,11 +1,12 @@
-type Input = {
+export type Input = {
     errorFilter? : string
     just? : string
     skip?: string[]
     doNotBreak?: boolean
     verbose?: boolean
 }
-function Tester(params: Input) {
+
+export function init (params: Input) {
 
     
     var __failed = []
@@ -84,32 +85,36 @@ function Tester(params: Input) {
 
     var _queue: { description: string, fn: Function }[] = []
 
-    return class {
-        static add(description: string, fn: () => void)    
-        static add(description: string, fn: () => Promise<any>)    
-        static add(description, fn) {
-            _queue.push({description, fn})
-        }
+    
+    function add(description: string, fn: () => void)    
+    function add(description: string, fn: () => Promise<any>)    
+    function add(description, fn) {
+        _queue.push({description, fn})
+    }
 
-        static run() {
-            return _queue.reduce(
-                (chain, current, idx) => {
-                    return chain.then(() => {
-                        console.log(`${idx}. ${current.description}`)
-                        return current.fn()
-                            .then(() => console.log('OK'))
-                            .catch(err => {
-                                console.error('Fail on ${current.description}')
-                                console.error(err)
-                                throw 'BAIL'
-                            })
-                    })
-                } ,
-                Promise.resolve()
-            ).catch( err => {
-                if (err === 'BAIL') process.exit(0)
-                handleError(err)
-            })
-        }        
+    function run() {
+        return _queue.reduce(
+            (chain, current, idx) => {
+                return chain.then(() => {
+                    console.log(`${idx}. ${current.description}`)
+                    return current.fn()
+                        .then(() => console.log('OK'))
+                        .catch(err => {
+                            console.error('Fail on ${current.description}')
+                            console.error(err)
+                            throw 'BAIL'
+                        })
+                })
+            },
+            Promise.resolve()
+        ).catch(err => {
+            if (err === 'BAIL') process.exit(0)
+            handleError(err)
+        })
+    }
+
+    return {
+        add,
+        run
     }
 }

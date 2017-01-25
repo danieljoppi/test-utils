@@ -2,7 +2,9 @@
     "compilerOptions": {
         "target" : "es6",
         "outDir": "built" ,
-        "module": "commonjs"
+        "module": "commonjs" ,
+        "declaration": true ,
+        "declarationDir": "typings"
     } ,
     "include": [
         "src/**/*.ts"

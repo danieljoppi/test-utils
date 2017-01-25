@@ -1,4 +1,5 @@
-function Tester(params) {
+"use strict";
+function init(params) {
     var __failed = [];
     function handleError(err) {
         var { errorFilter, verbose } = params;
@@ -74,27 +75,30 @@ function Tester(params) {
         return { changesFiltered, isOk };
     }
     var _queue = [];
-    return class {
-        static add(description, fn) {
-            _queue.push({ description, fn });
-        }
-        static run() {
-            return _queue.reduce((chain, current, idx) => {
-                return chain.then(() => {
-                    console.log(`${idx}. ${current.description}`);
-                    return current.fn()
-                        .then(() => console.log('OK'))
-                        .catch(err => {
-                        console.error('Fail on ${current.description}');
-                        console.error(err);
-                        throw 'BAIL';
-                    });
+    function add(description, fn) {
+        _queue.push({ description, fn });
+    }
+    function run() {
+        return _queue.reduce((chain, current, idx) => {
+            return chain.then(() => {
+                console.log(`${idx}. ${current.description}`);
+                return current.fn()
+                    .then(() => console.log('OK'))
+                    .catch(err => {
+                    console.error('Fail on ${current.description}');
+                    console.error(err);
+                    throw 'BAIL';
                 });
-            }, Promise.resolve()).catch(err => {
-                if (err === 'BAIL')
-                    process.exit(0);
-                handleError(err);
             });
-        }
+        }, Promise.resolve()).catch(err => {
+            if (err === 'BAIL')
+                process.exit(0);
+            handleError(err);
+        });
+    }
+    return {
+        add,
+        run
     };
 }
+exports.init = init;
