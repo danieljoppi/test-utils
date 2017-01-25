@@ -1,4 +1,4 @@
-export type Input = {
+type Input = {
     errorFilter? : string
     just? : string
     skip?: string[]
@@ -6,7 +6,7 @@ export type Input = {
     verbose?: boolean
 }
 
-export function init (params: Input) {
+export = function(params: Input) {
 
     
     var __failed = []

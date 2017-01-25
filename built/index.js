@@ -1,5 +1,5 @@
 "use strict";
-function init(params) {
+module.exports = function (params) {
     var __failed = [];
     function handleError(err) {
         var { errorFilter, verbose } = params;
@@ -100,5 +100,4 @@ function init(params) {
         add,
         run
     };
-}
-exports.init = init;
+};
