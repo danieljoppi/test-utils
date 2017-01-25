@@ -4,7 +4,8 @@
         "outDir": "built" ,
         "module": "commonjs" ,
         "declaration": true ,
-        "declarationDir": "typings"
+        "declarationDir": "typings" ,
+        "strictNullChecks": true
     } ,
     "include": [
         "src/**/*.ts"

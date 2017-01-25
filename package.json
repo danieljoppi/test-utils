@@ -1,6 +1,6 @@
 {
   "name": "test-utils",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Opinionated testing tools.",
   "main": "built/index.js",
   "scripts": {
@@ -18,11 +18,14 @@
   "homepage": "https://github.com/wkrueger/test-utils#readme",
   "devDependencies": {
     "@types/colors": "^1.1.1",
+    "@types/deep-diff": "^0.0.30",
     "@types/node": "^7.0.4",
     "typescript": "^2.1.5"
   },
   "dependencies": {
-    "colors": "^1.1.2"
-  } ,
-  "typings" : "typings/index.d.ts"
+    "colors": "^1.1.2",
+    "deep-diff": "^0.3.4",
+    "ono": "^2.2.4"
+  },
+  "typings": "typings/index.d.ts"
 }

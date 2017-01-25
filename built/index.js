@@ -1,5 +1,7 @@
 "use strict";
-module.exports = function (params) {
+const ono = require("ono");
+const deepDiff = require("deep-diff");
+module.exports = function (params = {}) {
     var __failed = [];
     function handleError(err) {
         var { errorFilter, verbose } = params;
@@ -22,7 +24,7 @@ module.exports = function (params) {
             console.error(err);
         //console.error('response>>', err.response);
         //console.error('expected>>', err.expected);
-        if (!params.doNotBreak)
+        if (err.bail)
             process.exit(0);
         else {
             __failed.push(err.casename || '');
@@ -49,7 +51,7 @@ module.exports = function (params) {
             console.error('item:', item);
         console.error('-----');
     }
-    function verifyDiff(diffobj, ignoreFields) {
+    function verifyChanges(diffobj, ignoreFields) {
         ignoreFields = ignoreFields || [];
         diffobj = diffobj || [];
         ignoreFields = ignoreFields.map(fs => {
@@ -74,6 +76,14 @@ module.exports = function (params) {
         var isOk = changesFiltered.length === 0;
         return { changesFiltered, isOk };
     }
+    function diff(response, expected, ignoreFields) {
+        var changes = deepDiff.diff(response, expected);
+        var { changesFiltered, isOk } = verifyChanges(changes, ignoreFields);
+        if (!isOk)
+            throw ono({
+                expected, changes: changesFiltered
+            }, 'Diff error.');
+    }
     var _queue = [];
     function add(description, fn) {
         _queue.push({ description, fn });
@@ -87,17 +97,18 @@ module.exports = function (params) {
                     .catch(err => {
                     console.error('Fail on ${current.description}');
                     console.error(err);
-                    throw 'BAIL';
+                    err.casename = current.description;
+                    err.bail = !params.doNotBreak;
+                    throw err;
                 });
             });
         }, Promise.resolve()).catch(err => {
-            if (err === 'BAIL')
-                process.exit(0);
             handleError(err);
         });
     }
     return {
         add,
-        run
+        run,
+        diff
     };
 };

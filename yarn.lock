@@ -6,6 +6,10 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/colors/-/colors-1.1.1.tgz#49733928fb47cf11254b7611e2f6f85ff6020521"
 
+"@types/deep-diff@^0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@types/deep-diff/-/deep-diff-0.0.30.tgz#43e25d439d3caf0c7f57b02082659b819806d5f0"
+
 "@types/node@^7.0.4":
   version "7.0.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.4.tgz#9aabc135979ded383325749f508894c662948c8b"
@@ -13,6 +17,14 @@
 colors@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
+
+deep-diff@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-0.3.4.tgz#aac5c39952236abe5f037a2349060ba01b00ae48"
+
+ono@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/ono/-/ono-2.2.4.tgz#f6c1d9ea64da07a54863986535da3de67e502696"
 
 typescript@^2.1.5:
   version "2.1.5"

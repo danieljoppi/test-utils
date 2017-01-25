@@ -1,3 +1,6 @@
+import ono = require('ono')
+import deepDiff = require('deep-diff')
+
 type Input = {
     errorFilter? : string
     just? : string
@@ -6,13 +9,20 @@ type Input = {
     verbose?: boolean
 }
 
-export = function(params: Input) {
+interface TestError extends Error {
+    changes?
+    casename: string
+    bail?: boolean
+}
+
+
+export = function (params: Input = {}) {
 
     
-    var __failed = []
+    var __failed : string[] = []
 
 
-    function handleError(err) {
+    function handleError(err:TestError) {
         var { errorFilter, verbose } = params
 
         if (err.changes) {
@@ -32,7 +42,7 @@ export = function(params: Input) {
         else console.error(err);
         //console.error('response>>', err.response);
         //console.error('expected>>', err.expected);
-        if (!params.doNotBreak) process.exit(0);
+        if (err.bail) process.exit(0);
         else {
             __failed.push(err.casename||'');
         }
@@ -59,7 +69,7 @@ export = function(params: Input) {
     }
     
 
-    function verifyDiff(diffobj, ignoreFields) {
+    function verifyChanges(diffobj: deepDiff.IDiff[], ignoreFields?) {
         ignoreFields = ignoreFields || [];
         diffobj = diffobj || [];
         ignoreFields = ignoreFields.map( fs => {
@@ -83,6 +93,15 @@ export = function(params: Input) {
         return { changesFiltered , isOk };
     }
 
+
+    function diff(response: {}, expected: {}, ignoreFields?:string[]) {
+        var changes = deepDiff.diff(response, expected)
+        var { changesFiltered, isOk } = verifyChanges(changes, ignoreFields)
+        if (!isOk) throw ono({
+            expected, changes: changesFiltered
+        },'Diff error.')
+    }
+
     var _queue: { description: string, fn: Function }[] = []
 
     
@@ -102,19 +121,21 @@ export = function(params: Input) {
                         .catch(err => {
                             console.error('Fail on ${current.description}')
                             console.error(err)
-                            throw 'BAIL'
+                            err.casename = current.description
+                            err.bail = !params.doNotBreak
+                            throw err
                         })
                 })
             },
             Promise.resolve()
         ).catch(err => {
-            if (err === 'BAIL') process.exit(0)
             handleError(err)
         })
     }
 
     return {
         add,
-        run
+        run,
+        diff
     }
 }
