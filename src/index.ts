@@ -3,8 +3,6 @@ import deepDiff = require('deep-diff')
 
 type Input = {
     errorFilter? : string
-    just? : string
-    skip?: string[]
     doNotBreak?: boolean
     verbose?: boolean
 }
@@ -105,16 +103,29 @@ export = function (params: Input = {}) {
     }
 
     var _queue: { description: string, fn: Function }[] = []
+    var _initqueue: { description: string, fn: Function }[] = []
 
     
-    function add(description: string, fn: () => void)    
-    function add(description: string, fn: () => Promise<any>)    
-    function add(description, fn) {
+    type addFnT = {
+        (description: string, fn: () => void)
+        (description: string, fn: () => Promise<any>)
+    }
+    
+    var init: addFnT = (description, fn) => {
+        _initqueue.push({description, fn})
+    }
+
+    var add : addFnT = (description, fn) => {
         _queue.push({description, fn})
     }
 
+    var only : addFnT = (description, fn) => {
+        console.warn('RUN ONLY: ', description)
+        _queue = [{ description, fn}]
+    }
+    
     function run() {
-        return _queue.reduce(
+        return [..._initqueue,..._queue].reduce(
             (chain, current, idx) => {
                 return chain.then(() => {
                     console.log(`${idx}. ${current.description}`)
@@ -134,7 +145,9 @@ export = function (params: Input = {}) {
     }
 
     return {
+        init,
         add,
+        only,
         run,
         diff
     }

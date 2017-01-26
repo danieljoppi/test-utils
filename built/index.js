@@ -87,11 +87,19 @@ module.exports = function (params = {}) {
             }, 'Diff error.');
     }
     var _queue = [];
-    function add(description, fn) {
+    var _initqueue = [];
+    var init = (description, fn) => {
+        _initqueue.push({ description, fn });
+    };
+    var add = (description, fn) => {
         _queue.push({ description, fn });
-    }
+    };
+    var only = (description, fn) => {
+        console.warn('RUN ONLY: ', description);
+        _queue = [{ description, fn }];
+    };
     function run() {
-        return _queue.reduce((chain, current, idx) => {
+        return [..._initqueue, ..._queue].reduce((chain, current, idx) => {
             return chain.then(() => {
                 console.log(`${idx}. ${current.description}`);
                 return current.fn()
@@ -107,7 +115,9 @@ module.exports = function (params = {}) {
         });
     }
     return {
+        init,
         add,
+        only,
         run,
         diff
     };
