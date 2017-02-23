@@ -5,6 +5,7 @@ type Input = {
     errorFilter? : string
     doNotBreak?: boolean
     verbose?: boolean
+    printOnThrow?: boolean
 }
 
 interface TestError extends Error {
@@ -49,7 +50,7 @@ export = function (params: Input = {}) {
     }
 
 
-    function printDiff(diffObj) {
+    function printDiff(diffObj:deepDiff.IDiff) {
         var kindmap = {
             N : 'aditional element' ,
             D : 'extra element' ,
@@ -97,9 +98,12 @@ export = function (params: Input = {}) {
     function diff(response: {}, expected: {}, ignoreFields?:string[]) {
         var changes = deepDiff.diff(response, expected)
         var { changesFiltered, isOk } = verifyChanges(changes, ignoreFields)
-        if (!isOk) throw ono({
-            expected, changes: changesFiltered
-        },'Diff error.')
+        if (!isOk) {
+            if (params.printOnThrow) changesFiltered.map(printDiff)
+            throw ono(
+                { expected, changes: changesFiltered },
+                'Diff error.')
+        }
     }
 
     var _queue: { description: string, fn: Function }[] = []

@@ -2,6 +2,7 @@ declare var _default: (params?: {
     errorFilter?: string | undefined;
     doNotBreak?: boolean | undefined;
     verbose?: boolean | undefined;
+    printOnThrow?: boolean | undefined;
 }) => {
     init: {
         (description: string, fn: () => void): any;

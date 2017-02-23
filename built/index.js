@@ -81,10 +81,11 @@ module.exports = function (params = {}) {
     function diff(response, expected, ignoreFields) {
         var changes = deepDiff.diff(response, expected);
         var { changesFiltered, isOk } = verifyChanges(changes, ignoreFields);
-        if (!isOk)
-            throw ono({
-                expected, changes: changesFiltered
-            }, 'Diff error.');
+        if (!isOk) {
+            if (params.printOnThrow)
+                changesFiltered.map(printDiff);
+            throw ono({ expected, changes: changesFiltered }, 'Diff error.');
+        }
     }
     var _queue = [];
     var _initqueue = [];
