@@ -58,13 +58,14 @@ export interface IDiffInput<T> {
 }
 ```
 
-To ignore position `n`, set as `*`. Ex: `[ 'company', 'employees', '*', 'name']`.
-
 Which means you may provide either:
 
   - Paths formatted as array. Ex: `[ 'company', 'employees', 0, 'name' ]`.
   - Functions which receive a path in that format and return a boolean
     (true to ignore). `path => path.slice(-1) === 'name'`
+
+
+To ignore position `n`, set as `*`. Ex: `[ 'company', 'employees', '*', 'name']`.
 
 ---
 
