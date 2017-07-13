@@ -5,7 +5,8 @@
         "module": "commonjs" ,
         "declaration": true ,
         "declarationDir": "typings" ,
-        "strictNullChecks": true
+        "strict" : true,
+        "noUnusedLocals": true
     } ,
     "include": [
         "src/**/*.ts"
