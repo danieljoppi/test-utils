@@ -58,6 +58,8 @@ export interface IDiffInput<T> {
 }
 ```
 
+To ignore position `n`, set as `*`. Ex: `[ 'company', 'employees', '*', 'name']`.
+
 Which means you may provide either:
 
   - Paths formatted as array. Ex: `[ 'company', 'employees', 0, 'name' ]`.
