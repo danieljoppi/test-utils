@@ -24,7 +24,7 @@ export declare class Runner {
     $failed: string[];
     run(): Promise<any>;
     init: addFnT;
-    test: addFnT;
+    add: addFnT;
     only: addFnT;
 }
 export interface TestError extends Error {

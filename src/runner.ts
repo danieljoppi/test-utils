@@ -52,7 +52,7 @@ export class Runner {
     }
 
 
-    test: addFnT = (description: string, fn: Function) => {
+    add: addFnT = (description: string, fn: Function) => {
         this.$queue.push({ description, fn })
     }
 

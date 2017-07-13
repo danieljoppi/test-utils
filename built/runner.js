@@ -10,7 +10,7 @@ class Runner {
         this.init = (description, fn) => {
             this.$initqueue.push({ description, fn });
         };
-        this.test = (description, fn) => {
+        this.add = (description, fn) => {
             this.$queue.push({ description, fn });
         };
         this.only = (description, fn) => {

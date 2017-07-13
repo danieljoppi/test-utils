@@ -13,7 +13,7 @@ let runner = new Test.runner.Runner();
 
 //runs before all. Functions are async (may return promises)
 runner.init('Before testing', () => { /*...*/ })
-runner.test('Some test', () => { /* ... */ })
+runner.add('Some test', () => { /* ... */ })
 //rename one existing test to "only", so only init + "that test" will be run
 runner.only('Only this', () => { /* .. */ })
 
